@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, Divider } from 'semantic-ui-react';
-var moment = require('moment-timezone');
+import { Card } from 'semantic-ui-react';
+import * as moment from 'moment-timezone';
 
 class Timezone extends React.Component {
   render() {

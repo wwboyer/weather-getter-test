@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Timezone from './components/Timezone';
 import Current from './components/Current';
-import { Card, Button, Divider } from 'semantic-ui-react';
+import Weekly from './components/Weekly';
+import { Card, Button } from 'semantic-ui-react';
+import Divider from 'semantic-ui-react/dist/commonjs/elements/Divider/Divider';
 
 class App extends Component {
 
@@ -11,14 +12,16 @@ class App extends Component {
     lat: null,
     long: null,
     text: "Get Location",
-    info: null
+    info: null,
+    loading: false
   }
 
   getLatitudeLongitude = () => {
     this.setState({
       lat: "Imma find you",
       long: "Get spooked boi",
-      text: "Loading..."
+      text: "Loading...",
+      loading: true
     })
     if("geolocation" in navigator){
       navigator.geolocation.getCurrentPosition(position => {
@@ -27,7 +30,8 @@ class App extends Component {
         this.setState({
           lat: position.coords.latitude.toFixed(6),
           long: position.coords.longitude.toFixed(6),
-          text: "Get Location"
+          text: "Get Location",
+          loading: false
         })
         fetch(proxyURL + targetURL)
         .then(response => response.json())
@@ -47,16 +51,17 @@ class App extends Component {
           <h1><a href="https://www.darksky.net/poweredby/" style={{color: "white", textDecoration: "none"}}>Powered by DarkSky</a></h1>
         </header>
         <Card centered>
-          Latitude: {this.state.lat}
-          <br></br>
-          Longitude: {this.state.long}
-          <br></br>
           <Card.Content>
-            <Button color={"green"} fluid={false} size="tiny" onClick={this.getLatitudeLongitude}>{this.state.text}</Button>
+            Latitude: {this.state.lat}
+            <br></br>
+            Longitude: {this.state.long}
+            <Divider />
+            <Button color={"green"} disabled={this.state.loading} loading={this.state.loading} fluid={false} size="tiny" onClick={this.getLatitudeLongitude}>{this.state.text}</Button>
           </Card.Content>
         </Card>
-        <Timezone info={this.state.info} />
-        <Current info={this.state.info} />
+        {this.state.info ? <Timezone info={this.state.info} /> : null}
+        {this.state.info ? <Current info={this.state.info} /> : null}
+        {this.state.info ? <Weekly info={this.state.info} /> : null}
       </div>
     );
   }
